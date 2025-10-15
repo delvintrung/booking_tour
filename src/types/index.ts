@@ -6,12 +6,13 @@ export interface User {
 export interface Tour {
   id: number;
   imageUrl: string;
-  price: string;
+  price: number;
   duration?: string;
   location?: string;
   title: string;
-  departurePoint: string;
+  departurePoint?: string;
   rating?: number;
+  days?: string;
 }
 
 export interface Promotion {
@@ -22,4 +23,13 @@ export interface Promotion {
   title: string;
   originalPrice: string;
   discountedPrice: string;
+}
+
+export interface Destination {
+  id: number;
+  imageUrl: string;
+  tag: string;
+  title?: string | null;
+  rating?: number;
+  tall?: boolean;
 }

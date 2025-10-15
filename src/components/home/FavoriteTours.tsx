@@ -1,11 +1,11 @@
-import { TourCard } from "./card/TourCard";
+import TourCard from "./card/TourCard";
 import type { Tour } from "@/types";
 
 const toursData: Tour[] = [
   {
     id: 1,
     imageUrl: "https://i.postimg.cc/k47vQ3Tf/quan-lan.jpg",
-    price: "2,250,000đ",
+    price: 2250000,
     title: "Tour du lịch Quan Lạn 3 ngày 2 đêm trọn gói 2025",
     departurePoint: "Hà Nội",
     rating: 5,
@@ -13,7 +13,7 @@ const toursData: Tour[] = [
   {
     id: 2,
     imageUrl: "https://i.postimg.cc/Wb8j3WTR/ha-giang.jpg",
-    price: "42,990,000đ",
+    price: 42990000,
     duration: "6N/5Đ",
     location: "Trung Quốc",
     title:
@@ -24,7 +24,7 @@ const toursData: Tour[] = [
   {
     id: 3,
     imageUrl: "https://i.postimg.cc/6qW85jVb/trung-quoc-2.jpg",
-    price: "12,690,000đ",
+    price: 12690000,
     duration: "6N/5Đ",
     location: "Trung Quốc",
     title:

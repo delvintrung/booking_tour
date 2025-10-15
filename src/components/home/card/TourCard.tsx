@@ -16,7 +16,7 @@ const StarRating = ({ rating = 5, className = "" }) => (
   </div>
 );
 
-export function TourCard({ tour }: { tour: Tour }) {
+export default function TourCard({ tour }: { tour: Tour }) {
   const { imageUrl, price, duration, location, title, departurePoint, rating } =
     tour;
 

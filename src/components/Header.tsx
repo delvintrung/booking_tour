@@ -65,7 +65,10 @@ const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <NavLink to="/locations" className="hover:text-orange-500 transition">
+          <NavLink
+            to="/destinations"
+            className="hover:text-orange-500 transition"
+          >
             ĐIỂM ĐẾN
           </NavLink>
           <NavLink to="/visa" className="hover:text-orange-500 transition">
