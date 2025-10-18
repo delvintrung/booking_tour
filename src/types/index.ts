@@ -13,6 +13,7 @@ export interface Tour {
   departurePoint?: string;
   rating?: number;
   days?: string;
+  startPoint?: string;
 }
 
 export interface Promotion {
@@ -26,10 +27,14 @@ export interface Promotion {
 }
 
 export interface Destination {
-  id: number;
-  imageUrl: string;
-  tag: string;
-  title?: string | null;
+  id?: number;
+  image: string;
+  title: string | null;
+  duration?: string;
+  location: string;
+  price?: string;
   rating?: number;
+  startPoint?: string;
   tall?: boolean;
+  keyName?: string;
 }

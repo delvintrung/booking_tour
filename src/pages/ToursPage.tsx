@@ -1,5 +1,5 @@
 import React from "react";
-import TourCard from "@/components/tour/card/TourCard";
+import TourCard from "@/components/home/card/TourCard";
 import type { Tour } from "@/types";
 const tours: Tour[] = [
   {
