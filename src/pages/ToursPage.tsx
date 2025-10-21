@@ -9,7 +9,7 @@ const tours: Tour[] = [
     title: "Tour du lịch Quan Lan 3 ngày 2 đêm trong gói 2025",
     location: "Hà Nội",
     rating: 4.5,
-    days: "3 ngày 2 đêm",
+    duration: "3 ngày 2 đêm",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const tours: Tour[] = [
     title: "Chuyến Du Lịch Bắc Ninh - Singapore 4 Ngày 3 Đêm",
     location: "Bắc Ninh",
     rating: 4.7,
-    days: "4 ngày 3 đêm",
+    duration: "4 ngày 3 đêm",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const tours: Tour[] = [
     title: "Chuyến du lịch Hải Phòng - Singapore 4 ngày 3 đêm",
     location: "Hải Phòng",
     rating: 4.6,
-    days: "4 ngày 3 đêm",
+    duration: "4 ngày 3 đêm",
   },
 ];
 

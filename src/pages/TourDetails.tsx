@@ -16,14 +16,20 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Separator } from "../components/ui/separator";
 import type { Tour } from "@/types";
+import { useNavigate } from "react-router-dom";
 
 const TourDetails = () => {
   const [tour, setTour] = useState<Tour | null>(null);
+  const navigate = useNavigate();
 
   const [phone, setPhone] = useState("");
+
+  const handleChangePage = (path: string) => {
+    navigate(`/${path}`);
+  };
+
   return (
     <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 py-10">
-      {/* LEFT CONTENT */}
       <Card className="lg:col-span-2">
         <CardHeader>
           <Tabs defaultValue="highlight">
@@ -67,7 +73,6 @@ const TourDetails = () => {
         </CardHeader>
       </Card>
 
-      {/* SIDEBAR */}
       <Card className="p-6 space-y-4">
         <CardHeader className="p-0">
           <h2 className="text-xl font-bold text-gray-800">{tour?.title}</h2>
@@ -107,7 +112,10 @@ const TourDetails = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold rounded-md">
+          <Button
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold rounded-md hover:cursor-pointer"
+            onClick={() => handleChangePage(`order-booking/${tour?.id}`)}
+          >
             ĐẶT NGAY
           </Button>
 

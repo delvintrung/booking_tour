@@ -1,6 +1,14 @@
 export interface User {
-  name: string;
+  id: number;
   email: string;
+  fullName: string;
+  password?: string;
+  phone: string;
+  id_role: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  avatarUrl?: string;
 }
 
 export interface Tour {
@@ -12,8 +20,6 @@ export interface Tour {
   title: string;
   departurePoint?: string;
   rating?: number;
-  days?: string;
-  startPoint?: string;
 }
 
 export interface Promotion {
@@ -37,4 +43,38 @@ export interface Destination {
   startPoint?: string;
   tall?: boolean;
   keyName?: string;
+}
+
+export interface Booking {
+  id: number;
+  id_user: number;
+  totalPrice: number;
+  note: string;
+  status: string;
+  contactEmail: string;
+  contactPhone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BookingDetail {
+  id: number;
+  id_booking: number;
+  id_tourDetail: number;
+  quantity: number;
+  price: number;
+  status: string;
+}
+
+export interface Payment {
+  id: number;
+  id_booking: number;
+  amount: number;
+  provider: string;
+
+  method: string;
+  status: string;
+  transactionDate: string;
+  createdAt: string;
+  updatedAt: string;
 }

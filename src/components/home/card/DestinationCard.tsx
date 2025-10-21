@@ -1,4 +1,6 @@
 import { Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import type { Destination } from "@/types";
 
 const StarRating = ({ rating = 5 }) => {
   return (
@@ -10,41 +12,37 @@ const StarRating = ({ rating = 5 }) => {
   );
 };
 
-interface DestinationCardProps {
-  imageUrl: string;
-  tag: string;
-  title: string;
-  rating: number;
-  large?: boolean;
-}
-
 export function DestinationCard({
-  imageUrl,
-  tag,
+  image,
+  location,
   title,
   rating,
-  large = false,
-}: DestinationCardProps) {
-  const cardHeight = large ? "h-[440px]" : "h-[212px]";
+  keyName,
+  tall = false,
+}: Destination) {
+  const cardHeight = tall ? "h-[440px]" : "h-[212px]";
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate(`/destination/${keyName}`);
+  };
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl text-white group ${cardHeight}`}
+      className={`relative overflow-hidden rounded-xl text-white group ${cardHeight} hover:cursor-pointer `}
+      onClick={handleRedirect}
     >
-      {/* Background Image */}
       <img
-        src={imageUrl}
-        alt={title}
+        src={image}
+        alt={title!}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       />
 
-      {/* Gradient Overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
 
-      {/* Content */}
       <div className="relative h-full flex flex-col justify-between p-5">
         <div className="bg-blue-500 text-white text-xs font-bold uppercase px-3 py-1 rounded-md self-start">
-          {tag}
+          {location}
         </div>
 
         <div>

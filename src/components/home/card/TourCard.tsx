@@ -26,9 +26,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
     navigate(`/tour/booking/${tour.id}`);
   };
 
-  const handleRedirectToWishlist = () => {
-    navigate(`/tour/wishlist/${tour.id}`);
-  };
+  // const handleRedirectToWishlist = () => {
+  //   navigate(`/tour/wishlist/${tour.id}`);
+  // };
 
   const handleRedirectToDetails = () => {
     navigate(`/tour/details/${tour.id}`);

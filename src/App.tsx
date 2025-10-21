@@ -7,6 +7,10 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ListTours from "./pages/ListTours";
 import TourDetails from "./pages/TourDetails";
+import HandBook from "./components/blog/HandBook";
+import TravelTips from "./components/blog/TravelTips";
+import Profile from "./components/user/Profile";
+import BookingPage from "./pages/Booking";
 
 function App() {
   return (
@@ -50,6 +54,42 @@ function App() {
           element={
             <MainLayout>
               <TourDetails />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/blog/tour/handbook"
+          element={
+            <MainLayout>
+              <HandBook />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/blog/tour/experience"
+          element={
+            <MainLayout>
+              <TravelTips />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/user/profile"
+          element={
+            <MainLayout>
+              <Profile />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/order-booking/:id"
+          element={
+            <MainLayout>
+              <BookingPage />
             </MainLayout>
           }
         />

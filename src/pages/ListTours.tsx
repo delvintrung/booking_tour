@@ -1,9 +1,7 @@
-import { useParams } from "react-router-dom";
 import type { Tour } from "@/types";
 import TourCard from "@/components/home/card/TourCard";
 
 const ListTours = () => {
-  const { name } = useParams<{ name: string }>();
   const tours: Tour[] = [
     {
       id: 1,
