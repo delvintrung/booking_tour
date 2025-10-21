@@ -25,11 +25,10 @@ export function CtaSection() {
 
   return (
     <section className="relative w-full py-6 text-white">
-      <img
-        src={backgroundImageUrl}
-        alt="Background"
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
-      />
+      <div
+        className={`absolute inset-0 bg-cover bg-center bg-fixed`}
+        style={{ backgroundImage: `url(${backgroundImageUrl})` }}
+      ></div>
 
       <div className="absolute top-0 left-0 w-full h-full bg-slate-800/60 z-10"></div>
 

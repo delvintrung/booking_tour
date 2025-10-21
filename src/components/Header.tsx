@@ -1,4 +1,3 @@
-import { useThemeStore } from "@/stores/themeStore";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,14 +8,19 @@ import {
 import { ChevronDown } from "lucide-react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 
-const Header = () => {
-  // const { theme, toggleTheme } = useThemeStore();
+const Header = ({ isTop }: { isTop?: boolean }) => {
   const navigate = useNavigate();
-  const handleChangePage = () => {
-    navigate("/booking");
+  const handleChangePage = (path: string) => {
+    navigate(`/${path}`);
   };
   return (
-    <header className="border-b bg-white sticky top-0 z-50">
+    <header
+      className={`border-b bg-white ${
+        isTop
+          ? "bg-transparent text-white sticky top-0 z-50"
+          : "bg-white text-gray-900 shadow-md"
+      }`}
+    >
       <div className="container mx-auto flex items-center justify-between py-3 px-20">
         <Link to="/">
           <div className="flex items-center gap-1">
@@ -65,7 +69,10 @@ const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <NavLink to="/locations" className="hover:text-orange-500 transition">
+          <NavLink
+            to="/destinations"
+            className="hover:text-orange-500 transition"
+          >
             ĐIỂM ĐẾN
           </NavLink>
           <NavLink to="/visa" className="hover:text-orange-500 transition">
@@ -77,18 +84,30 @@ const Header = () => {
               BLOG <ChevronDown size={16} />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>Cẩm nang du lịch</DropdownMenuItem>
-              <DropdownMenuItem>Kinh nghiệm đặt tour</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/blog/tour/handbook">Cẩm nang du lịch</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/blog/tour/experience">Kinh nghiệm đặt tour</Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>
 
-        <Button
-          className="bg-[#F35C4C] hover:bg-[#e14c3e] text-white font-semibold px-6 py-2 rounded-none"
-          onClick={handleChangePage}
-        >
-          ĐẶT TOUR
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button
+            className="bg-[#F35C4C] hover:bg-[#e14c3e] text-white font-semibold px-6 py-2 rounded-none"
+            onClick={() => handleChangePage("tours")}
+          >
+            ĐẶT TOUR
+          </Button>
+          <Button
+            className="bg-[#F35C4C] hover:bg-[#e14c3e] text-white font-semibold px-6 py-2 rounded-none"
+            onClick={() => handleChangePage("sign-in")}
+          >
+            SIGN IN
+          </Button>
+        </div>
       </div>
     </header>
   );

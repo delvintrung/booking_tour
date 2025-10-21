@@ -1,36 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { DestinationCard } from "./card/DestinationCard";
+import type { Destination } from "@/types";
 
-const destinations = [
+const destinations: Destination[] = [
   {
     id: 1,
-    tag: "Trung Quốc",
+    location: "Trung Quốc",
     title: "Tour Du Lịch Trung Quốc: Khám Phá Đất Nước Hùng Vĩ",
     rating: 5,
-    imageUrl: "https://i.postimg.cc/mD3hYx4C/china.jpg",
-    large: true,
+    image: "/public/destination/china/van-nam.webp",
+    tall: true,
+    keyName: "china",
   },
   {
     id: 2,
-    tag: "Nhật Bản",
+    location: "Nhật Bản",
     title: "Tour du lịch Nhật Bản 2024",
     rating: 5,
-    imageUrl: "https://i.postimg.cc/0jL5q4fK/japan.jpg",
-    large: true,
+    image: "/public/destination/japan/phu-sy.jpg",
+    tall: true,
+    keyName: "japan",
   },
   {
     id: 3,
-    tag: "Hàn Quốc",
-    title: "",
+    location: "Hàn Quốc",
+    title: "Tour du lịch Hàn Quốc 2024",
     rating: 5,
-    imageUrl: "https://i.postimg.cc/2yXg0sCy/korea.jpg",
+    image: "/public/destination/korea/han-quoc.jpg",
+    keyName: "korea",
   },
   {
     id: 4,
-    tag: "Thái Lan",
+    location: "Thái Lan",
     title: "TOUR DU LỊCH THÁI LAN",
     rating: 5,
-    imageUrl: "https://i.postimg.cc/pT3Y3YJk/thailand.jpg",
+    image: "/public/destination/thailand/chua-vang.jpg",
+    keyName: "thailand",
   },
 ];
 
