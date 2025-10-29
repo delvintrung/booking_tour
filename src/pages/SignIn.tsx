@@ -4,8 +4,27 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Facebook } from "lucide-react";
 import GoogleIcon from "@/assets/googleIcon.svg";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BaseAPIURL } from "@/lib/utils";
+import Loading from "@/components/Loading";
+import { useUserStore } from "@/stores/userStore";
+import { toast } from "sonner";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const { setUser } = useUserStore();
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.id]: e.target.value });
+  };
+
   const handleGoogleLogin = () => {
     alert("Đăng nhập bằng Google!");
   };
@@ -14,10 +33,35 @@ export default function SignIn() {
     alert("Đăng nhập bằng Facebook!");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Đăng nhập thành công (demo)");
+    try {
+      setIsLoading(true);
+      if (form.username === "" || form.password === "") {
+        toast("Thiếu usernam hoặc password");
+        return;
+      }
+
+      const response = await axios.post(`${BaseAPIURL}/login`, form);
+      if (response.status === 200) {
+        toast.success("Đăng nhập thành công!");
+        const token = await response.data.data.accessToken;
+        localStorage.setItem("accessToken", token);
+        setUser(response.data.data.userLogin);
+        navigate("/");
+      } else {
+        toast.error(response.data.message || "Đăng nhập thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi đăng nhập:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -34,12 +78,13 @@ export default function SignIn() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Tên đăng nhập</Label>
               <Input
-                id="email"
+                id="username"
                 type="email"
                 placeholder="you@example.com"
-                required
+                onChange={handleChange}
+                value={form.username}
               />
             </div>
 
@@ -49,7 +94,8 @@ export default function SignIn() {
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                required
+                onChange={handleChange}
+                value={form.password}
               />
             </div>
 

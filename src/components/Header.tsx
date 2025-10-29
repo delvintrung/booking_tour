@@ -5,11 +5,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserStore } from "@/stores/userStore";
 import { ChevronDown } from "lucide-react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 const Header = ({ isTop }: { isTop?: boolean }) => {
   const navigate = useNavigate();
+  const { user } = useUserStore();
+
   const handleChangePage = (path: string) => {
     navigate(`/${path}`);
   };
@@ -101,12 +106,24 @@ const Header = ({ isTop }: { isTop?: boolean }) => {
           >
             ĐẶT TOUR
           </Button>
-          <Button
-            className="bg-[#F35C4C] hover:bg-[#e14c3e] text-white font-semibold px-6 py-2 rounded-none"
-            onClick={() => handleChangePage("sign-in")}
-          >
-            SIGN IN
-          </Button>
+          {user == null ? (
+            <Button
+              className="bg-[#F35C4C] hover:bg-[#e14c3e] text-white font-semibold px-6 py-2 rounded-none"
+              onClick={() => handleChangePage("sign-in")}
+            >
+              SIGN IN
+            </Button>
+          ) : (
+            <Link to="/user/profile">
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </Link>
+          )}
         </div>
       </div>
     </header>

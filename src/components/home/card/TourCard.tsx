@@ -19,8 +19,7 @@ const StarRating = ({ rating = 5, className = "" }) => (
 
 export default function TourCard({ tour }: { tour: Tour }) {
   const navigate = useNavigate();
-  const { imageUrl, price, duration, location, title, departurePoint, rating } =
-    tour;
+  const { imageUrl, price, duration, location, title, rating } = tour;
 
   const handleRedirectToBooking = () => {
     navigate(`/tour/booking/${tour.id}`);
@@ -72,7 +71,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
         </h3>
 
         <div className="flex items-center justify-between text-sm text-gray-600 mt-2">
-          <span>Khởi hành tại: {departurePoint}</span>
+          {/* <span>Khởi hành tại: {departurePoint}</span> */}
           <StarRating rating={rating} />
         </div>
       </CardContent>
