@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "./Header";
 import headerDestinations from "@/lib/headerBackground";
@@ -9,15 +9,6 @@ const SpanHeader: React.FC = () => {
   const currentDestination = headerDestinations.find(
     (dest) => dest.key === name
   );
-
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     console.log("scrollY:", window.scrollY);
-  //     setIsTop(window.scrollY > 60);
-  //   };
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
 
   if (!currentDestination) {
     return <Header isTop={isTop} />;

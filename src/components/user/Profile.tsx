@@ -1,20 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUserStore } from "@/stores/userStore";
+import type { User } from "@/types";
+import { useNavigate } from "react-router-dom";
 
-// 🧍‍♂️ Mock dữ liệu user
-const mockUser = {
-  fullName: "Nguyễn Văn A",
-  email: "nguyenvana@gmail.com",
-  phone: "0987654321",
-  status: "active",
-  createdAt: "2024-08-10",
-};
-
-// 📖 Mock lịch sử tour
 const mockBookings = [
   {
     id: 1,
@@ -33,10 +26,26 @@ const mockBookings = [
 ];
 
 export default function Profile() {
-  const [user, setUser] = useState(mockUser);
+  const { user, clearUser } = useUserStore();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<User | null>(user);
+
+  useEffect(() => {
+    setFormData(user);
+  }, [user]);
 
   const handleSave = () => {
-    console.log("Saved user info:", user);
+    console.log("Saved user info:", formData);
+  };
+
+  const handleChange = (field: keyof User, value: string) => {
+    setFormData((prev) => (prev ? { ...prev, [field]: value } : prev));
+  };
+
+  const handleLogout = () => {
+    clearUser();
+    localStorage.removeItem("accessToken");
+    navigate("/sign-in");
   };
 
   return (
@@ -48,22 +57,19 @@ export default function Profile() {
 
         <CardContent>
           <Tabs defaultValue="info" className="w-full">
-            {/* --- Tabs header --- */}
-            <TabsList className="grid grid-cols-2 w-[300px] mb-4">
+            <TabsList className="grid grid-cols-3 w-[450px] mb-4">
               <TabsTrigger value="info">Thông tin cá nhân</TabsTrigger>
               <TabsTrigger value="history">Lịch sử tour</TabsTrigger>
+              <TabsTrigger value="wishlist">Danh sách yêu thích</TabsTrigger>
             </TabsList>
 
-            {/* --- Tab: Thông tin cá nhân --- */}
             <TabsContent value="info">
               <div className="space-y-4">
                 <div>
                   <Label>Họ và tên</Label>
                   <Input
-                    value={user.fullName}
-                    onChange={(e) =>
-                      setUser({ ...user, fullName: e.target.value })
-                    }
+                    value={formData?.fullName || ""}
+                    onChange={(e) => handleChange("fullName", e.target.value)}
                   />
                 </div>
 
@@ -71,10 +77,8 @@ export default function Profile() {
                   <Label>Email</Label>
                   <Input
                     type="email"
-                    value={user.email}
-                    onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
-                    }
+                    value={formData?.email || ""}
+                    onChange={(e) => handleChange("email", e.target.value)}
                   />
                 </div>
 
@@ -82,15 +86,16 @@ export default function Profile() {
                   <Label>Số điện thoại</Label>
                   <Input
                     type="tel"
-                    value={user.phone}
-                    onChange={(e) =>
-                      setUser({ ...user, phone: e.target.value })
-                    }
+                    value={formData?.phone || ""}
+                    onChange={(e) => handleChange("phone", e.target.value)}
                   />
                 </div>
 
-                <div className="pt-2">
-                  <Button onClick={handleSave}>Lưu thay đổi</Button>
+                <div className="pt-2 flex gap-2">
+                  <Button onClick={handleSave}>💾 Lưu thay đổi</Button>
+                  <Button variant="outline" onClick={handleLogout}>
+                    🚪 Đăng xuất
+                  </Button>
                 </div>
               </div>
             </TabsContent>
@@ -123,6 +128,10 @@ export default function Profile() {
                   </Card>
                 ))}
               </div>
+            </TabsContent>
+
+            <TabsContent value="wishlist">
+              <div className="text-gray-500">Chức năng đang phát triển...</div>
             </TabsContent>
           </Tabs>
         </CardContent>

@@ -5,7 +5,7 @@ import TourPage from "./pages/ToursPage";
 import { DestinationsGrid } from "./components/destination/DestinationGrid";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import ListTours from "./pages/ListTours";
+import ListTours from "./pages/DestinationTours";
 import TourDetails from "./pages/TourDetails";
 import HandBook from "./components/blog/HandBook";
 import TravelTips from "./components/blog/TravelTips";

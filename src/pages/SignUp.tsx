@@ -5,26 +5,46 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Facebook } from "lucide-react";
 import GoogleIcon from "@/assets/googleIcon.svg";
 import { useState } from "react";
+import axios from "axios";
+import { BaseAPIURL } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import Loading from "@/components/Loading";
+import { toast } from "sonner";
 
 export default function SignUp() {
   const [form, setForm] = useState({
-    name: "",
+    fullname: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
       alert("Mật khẩu xác nhận không khớp!");
       return;
     }
-    alert("Đăng ký thành công (demo)");
+    try {
+      setIsLoading(true);
+      const { confirmPassword, ...data } = form;
+      const response = await axios.post(`${BaseAPIURL}/users/create`, data);
+      if (response.status === 201) {
+        toast.success("Đăng ký thành công!");
+        navigate("/sign-in");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -34,6 +54,10 @@ export default function SignUp() {
   const handleFacebookLogin = () => {
     alert("Đăng ký bằng Facebook!");
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -52,10 +76,10 @@ export default function SignUp() {
             <div>
               <Label htmlFor="name">Họ và tên</Label>
               <Input
-                id="name"
+                id="fullname"
                 type="text"
                 placeholder="Nguyễn Văn A"
-                value={form.name}
+                value={form.fullname}
                 onChange={handleChange}
                 required
               />

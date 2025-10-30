@@ -1,37 +1,44 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import TourCard from "@/components/home/card/TourCard";
 import type { Tour } from "@/types";
-const tours: Tour[] = [
-  {
-    id: 1,
-    imageUrl: "https://via.placeholder.com/300x200?text=Tour+Quan+Lan",
-    price: 2250000,
-    title: "Tour du lịch Quan Lan 3 ngày 2 đêm trong gói 2025",
-    location: "Hà Nội",
-    rating: 4.5,
-    duration: "3 ngày 2 đêm",
-  },
-  {
-    id: 2,
-    imageUrl: "https://via.placeholder.com/300x200?text=Universal+Singapore",
-    price: 11490000,
-    title: "Chuyến Du Lịch Bắc Ninh - Singapore 4 Ngày 3 Đêm",
-    location: "Bắc Ninh",
-    rating: 4.7,
-    duration: "4 ngày 3 đêm",
-  },
-  {
-    id: 3,
-    imageUrl: "https://via.placeholder.com/300x200?text=Haiphong+Singapore",
-    price: 12900000,
-    title: "Chuyến du lịch Hải Phòng - Singapore 4 ngày 3 đêm",
-    location: "Hải Phòng",
-    rating: 4.6,
-    duration: "4 ngày 3 đêm",
-  },
-];
+import { AxiosClient } from "@/lib/utils";
+import Loading from "@/components/Loading";
 
 const TourPage: React.FC = () => {
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchTours = async () => {
+    try {
+      setIsLoading(true);
+      const response = await AxiosClient.get("/tours");
+      const results = response.data.data.result || [];
+      setTours(results);
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTours();
+  }, []);
+
+  console.log("Tours data:", tours);
+
+  if (isLoading) return <Loading />;
+
+  if (!isLoading && tours.length === 0)
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+        <p className="text-lg font-medium">Hiện chưa có tour nào được đăng.</p>
+        <p className="text-sm mt-2">
+          Vui lòng quay lại sau hoặc thử làm mới trang.
+        </p>
+      </div>
+    );
+
   return (
     <div className="container mx-auto px-20 py-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

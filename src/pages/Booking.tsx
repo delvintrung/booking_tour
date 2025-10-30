@@ -4,6 +4,8 @@ import StepPayment from "@/components/booking/StepPayment";
 import StepComplete from "@/components/booking/StepComplete";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useSelectedTourStore } from "@/stores/selectedTourStore";
+import { useBookingInfoStore } from "@/stores/informationBooking";
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -13,12 +15,19 @@ const BookingPage = () => {
   const prevStep = () => setStep((s) => s - 1);
   const restartBooking = () => setStep(1);
 
+  const closeBooking = () => {
+    useSelectedTourStore.getState().clearTour();
+    useSelectedTourStore.getState().clearTourDetail();
+    useBookingInfoStore.getState().clearBookingInfo();
+    navigate(-1);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
       <Button
         variant="outline"
         className="text-sm text-gray-600 hover:text-primary mb-4"
-        onClick={() => navigate(-1)}
+        onClick={closeBooking}
       >
         ← Quay lại
       </Button>

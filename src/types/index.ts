@@ -3,11 +3,11 @@ export interface User {
   email: string;
   fullName: string;
   password?: string;
-  phone: string;
-  id_role: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
+  phone?: string;
+  id_role?: number;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
   avatarUrl?: string;
 }
 
@@ -17,9 +17,35 @@ export interface Tour {
   price: number;
   duration?: string;
   location?: string;
+  longDesc?: string;
+  shortDesc?: string;
   title: string;
-  departurePoint?: string;
   rating?: number;
+  capacity?: number;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: number;
+  updatedBy?: number;
+  tourDetails?: TourDetail[];
+}
+
+export interface TourDetail {
+  id: number;
+  id_tour: number;
+  startDay: string;
+  endDay: string;
+  status: string;
+  startLocation: string;
+  createdAt: string;
+  updatedAt: string;
+  tourPrices?: Price[];
+}
+
+interface Price {
+  id: number;
+  price: number;
+  priceType: string;
+  tour_detail_id: number;
 }
 
 export interface Promotion {
@@ -64,6 +90,8 @@ export interface BookingDetail {
   quantity: number;
   price: number;
   status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Payment {

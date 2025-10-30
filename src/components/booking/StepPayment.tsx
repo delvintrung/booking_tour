@@ -3,6 +3,8 @@ import BookingSummary from "./BookingSummary";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useBookingInfoStore } from "@/stores/informationBooking";
+import { toast } from "sonner";
 
 interface Props {
   nextStep: () => void;
@@ -11,12 +13,30 @@ interface Props {
 
 const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
   const [paymentMethod, setPaymentMethod] = useState("momo");
+  const [paymentToken, setPaymentToken] = useState<string | null>(null);
+
+  const handlePayment = () => {
+    if (paymentMethod === "momo") {
+      setPaymentToken("String");
+    } else {
+    }
+    if (paymentToken) {
+      nextStep();
+    } else {
+      toast("Chưa thanh toán thành công");
+    }
+  };
+
+  const handleClosePayment = () => {
+    setPaymentToken(null);
+    useBookingInfoStore.getState().clearBookingInfo();
+    toast("Đã hoàn tác hoạt động");
+    prevStep();
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* LEFT: Payment Form */}
       <div className="lg:col-span-2 space-y-8">
-        {/* Thanh toán tiêu đề */}
         <section>
           <h2 className="text-lg font-semibold mb-4 text-blue-800">
             PHƯƠNG THỨC THANH TOÁN
@@ -25,13 +45,11 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
             Vui lòng chọn phương thức thanh toán phù hợp để hoàn tất đặt tour.
           </p>
 
-          {/* Radio chọn phương thức */}
           <RadioGroup
             defaultValue="momo"
             onValueChange={setPaymentMethod}
             className="space-y-4"
           >
-            {/* Momo */}
             <div className="flex items-center border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition">
               <RadioGroupItem value="momo" id="momo" />
               <Label
@@ -39,7 +57,7 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
                 className="ml-4 flex items-center gap-3 cursor-pointer"
               >
                 <img
-                  src="/momo-logo.png"
+                  src="/logo/payment/momo.png"
                   alt="Momo"
                   className="w-10 h-10 object-contain"
                 />
@@ -53,8 +71,6 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
                 </div>
               </Label>
             </div>
-
-            {/* VNPAY */}
             <div className="flex items-center border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition">
               <RadioGroupItem value="vnpay" id="vnpay" />
               <Label
@@ -62,7 +78,7 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
                 className="ml-4 flex items-center gap-3 cursor-pointer"
               >
                 <img
-                  src="/vnpay-logo.png"
+                  src="/logo/payment/vnpay.png"
                   alt="VNPAY"
                   className="w-10 h-10 object-contain"
                 />
@@ -79,7 +95,6 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
           </RadioGroup>
         </section>
 
-        {/* Hiển thị thông tin hướng dẫn */}
         <section className="mt-6 border rounded-lg p-5 bg-blue-50 text-blue-900">
           {paymentMethod === "momo" ? (
             <>
@@ -105,22 +120,23 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
           )}
         </section>
 
-        {/* Buttons */}
         <div className="flex justify-between pt-6">
           <Button
             variant="outline"
-            onClick={prevStep}
+            onClick={handleClosePayment}
             className="text-gray-700 border-gray-300"
           >
             ← Quay lại
           </Button>
-          <Button onClick={nextStep} className="bg-red-600 hover:bg-red-700">
+          <Button
+            onClick={handlePayment}
+            className="bg-red-600 hover:bg-red-700"
+          >
             Xác nhận thanh toán
           </Button>
         </div>
       </div>
 
-      {/* RIGHT: Booking Summary */}
       <div>
         <BookingSummary />
       </div>

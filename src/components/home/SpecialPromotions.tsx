@@ -3,7 +3,7 @@ import { PromotionCard } from "./card/PromotionCard";
 const promotionsData = [
   {
     id: 1,
-    imageUrl: "https://i.postimg.cc/kX45YtM8/thai-lan-promo.jpg", // Thay bằng link ảnh của bạn
+    imageUrl: "https://i.postimg.cc/kX45YtM8/thai-lan-promo.jpg",
     discount: 44,
     locationTag: "Thái Lan",
     title:
@@ -13,7 +13,7 @@ const promotionsData = [
   },
   {
     id: 2,
-    imageUrl: "https://i.postimg.cc/1359K2sR/vung-tau-promo.jpg", // Thay bằng link ảnh của bạn
+    imageUrl: "https://i.postimg.cc/1359K2sR/vung-tau-promo.jpg",
     discount: 35,
     locationTag: "Vũng Tàu",
     title: "Tour du lịch TP. Hồ Chí Minh - Hồ Tràm 2 ngày 1 đêm",
@@ -22,7 +22,7 @@ const promotionsData = [
   },
   {
     id: 3,
-    imageUrl: "https://i.postimg.cc/g0R5WJ1x/quang-binh-promo.jpg", // Thay bằng link ảnh của bạn
+    imageUrl: "https://i.postimg.cc/g0R5WJ1x/quang-binh-promo.jpg",
     discount: 34,
     locationTag: "Quảng Bình",
     title: "Tour du lịch TP Hồ Chí Minh - Quảng Bình - Phong Nha 3 ngày 2 đêm",
