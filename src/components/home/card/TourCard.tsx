@@ -19,10 +19,10 @@ const StarRating = ({ rating = 5, className = "" }) => (
 
 export default function TourCard({ tour }: { tour: Tour }) {
   const navigate = useNavigate();
-  const { imageUrl, price, duration, location, title, rating } = tour;
+  const { imageUrl, duration, location, title, rating } = tour;
 
   const handleRedirectToBooking = () => {
-    navigate(`/tour/booking/${tour.id}`);
+    navigate(`/tour/details/${tour.id}`);
   };
 
   // const handleRedirectToWishlist = () => {
@@ -40,9 +40,6 @@ export default function TourCard({ tour }: { tour: Tour }) {
         onClick={handleRedirectToDetails}
       >
         <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
-        <div className="absolute top-0 right-0 bg-red-500 text-white font-bold text-lg py-2 px-4 rounded-bl-xl">
-          {price}
-        </div>
       </div>
 
       <CardContent

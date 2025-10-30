@@ -181,7 +181,7 @@ const TourDetails = () => {
             </div>
 
             <Button
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold rounded-md"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold rounded-md hover:cursor-pointer"
               onClick={handleChangeToBooking}
             >
               ĐẶT NGAY

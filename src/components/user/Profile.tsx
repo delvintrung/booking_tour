@@ -57,9 +57,10 @@ export default function Profile() {
 
         <CardContent>
           <Tabs defaultValue="info" className="w-full">
-            <TabsList className="grid grid-cols-2 w-[300px] mb-4">
+            <TabsList className="grid grid-cols-3 w-[450px] mb-4">
               <TabsTrigger value="info">Thông tin cá nhân</TabsTrigger>
               <TabsTrigger value="history">Lịch sử tour</TabsTrigger>
+              <TabsTrigger value="wishlist">Danh sách yêu thích</TabsTrigger>
             </TabsList>
 
             <TabsContent value="info">
@@ -127,6 +128,10 @@ export default function Profile() {
                   </Card>
                 ))}
               </div>
+            </TabsContent>
+
+            <TabsContent value="wishlist">
+              <div className="text-gray-500">Chức năng đang phát triển...</div>
             </TabsContent>
           </Tabs>
         </CardContent>

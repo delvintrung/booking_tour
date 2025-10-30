@@ -10,9 +10,7 @@ interface BookingState {
     } | null;
     passengers: {
       adults: number;
-      teens: number;
       children: number;
-      infants: number;
     } | null;
   };
   setBookingInfo: (info: any) => void;

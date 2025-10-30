@@ -95,7 +95,6 @@ const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
           </RadioGroup>
         </section>
 
-        {/* Hiển thị thông tin hướng dẫn */}
         <section className="mt-6 border rounded-lg p-5 bg-blue-50 text-blue-900">
           {paymentMethod === "momo" ? (
             <>

@@ -18,9 +18,7 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
 
   const [passengerInfo, setPassengerInfo] = useState({
     adults: 1,
-    teens: 0,
     children: 1,
-    infants: 0,
   });
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,11 +61,7 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
       toast.error("Tour bắt buộc phải có ít nhất 1 người lớn!");
       return;
     }
-    const totalPassengers =
-      passengerInfo.adults +
-      passengerInfo.teens +
-      passengerInfo.children +
-      passengerInfo.infants;
+    const totalPassengers = passengerInfo.adults + passengerInfo.children;
 
     if (totalPassengers === 0) {
       toast.error("Vui lòng chọn số lượng hành khách!");
@@ -122,9 +116,7 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { key: "adults", label: "Người lớn" },
-              { key: "teens", label: "Trẻ em" },
               { key: "children", label: "Trẻ nhỏ" },
-              { key: "infants", label: "Em bé" },
             ].map(({ key, label }) => (
               <div
                 key={key}
@@ -183,7 +175,6 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
         </Button>
       </div>
 
-      {/* --- Cột bên phải: Tóm tắt --- */}
       <div>
         <BookingSummary />
       </div>
