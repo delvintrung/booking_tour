@@ -1,7 +1,7 @@
 export interface User {
   id: number;
   email: string;
-  fullName: string;
+  fullname: string;
   password?: string;
   phone?: string;
   id_role?: number;
@@ -73,25 +73,29 @@ export interface Destination {
 
 export interface Booking {
   id: number;
-  id_user: number;
-  totalPrice: number;
-  note: string;
-  status: string;
+  userId: number;
+  orderCode: string;
+  contactFullname: string;
   contactEmail: string;
   contactPhone: string;
+  contactAddress: string;
+  note: string;
+  totalPrice: number;
+  status: string;
   createdAt: string;
   updatedAt: string;
+  bookingDetails?: BookingDetail[];
 }
 
 export interface BookingDetail {
-  id: number;
-  id_booking: number;
-  id_tourDetail: number;
+  id?: number;
+  tourDetailId: number;
+  tourPriceId: number;
   quantity: number;
   price: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
+  status: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Payment {

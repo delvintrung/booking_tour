@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -6,47 +6,82 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUserStore } from "@/stores/userStore";
 import type { User } from "@/types";
-import { useNavigate } from "react-router-dom";
-
-const mockBookings = [
-  {
-    id: 1,
-    title: "Khám Phá Tân Cương Huyền Bí 10 Ngày 9 Đêm",
-    date: "2025-03-20",
-    price: 79990000,
-    status: "Đã hoàn thành",
-  },
-  {
-    id: 2,
-    title: "Tour Trung Quốc 8 Ngày 7 Đêm - Cam Túc, Đan Hà",
-    date: "2025-05-15",
-    price: 43990000,
-    status: "Đã đặt cọc",
-  },
-];
+import { useNavigate, Link } from "react-router-dom";
+import { AxiosClient } from "@/lib/utils";
+import { toast } from "sonner";
+import HistoryTourCard from "./HistoryTourCard";
 
 export default function Profile() {
   const { user, clearUser } = useUserStore();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState<User | null>(user);
+
+  const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+  const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
   useEffect(() => {
     setFormData(user);
   }, [user]);
 
-  const handleSave = () => {
-    console.log("Saved user info:", formData);
+  const handleSave = async () => {
+    const isValidPhone = formData?.phone?.match(regexPhoneNumber)
+      ? true
+      : false;
+    if (!isValidPhone) {
+      toast.error("Số điện thoại không hợp lệ. Vui lòng kiểm tra lại.");
+      return;
+    }
+    const isValidEmail = formData?.email?.match(regexEmail) ? true : false;
+    if (!isValidEmail) {
+      toast.error("Địa chỉ email không hợp lệ. Vui lòng kiểm tra lại.");
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const response = await AxiosClient.put(
+        "/users/" + formData?.id,
+        formData
+      );
+      if (response.data.data) {
+        setFormData(response.data as User);
+        toast.success("Cập nhật thông tin thành công!");
+      }
+    } catch (error) {
+      toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (field: keyof User, value: string) => {
     setFormData((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     clearUser();
+    const res = await AxiosClient.post("/auth/logout");
     localStorage.removeItem("accessToken");
+    toast.success(res.data as string);
     navigate("/sign-in");
   };
+
+  const mockBookings = [
+    {
+      id: 1,
+      bookingDetails: [],
+      createdAt: "2023-08-15 10:30:00 AM",
+      status: "Hoàn thành",
+      totalPrice: "1500000",
+    },
+    {
+      id: 2,
+      bookingDetails: [],
+      createdAt: "2023-08-15 10:30:00 AM",
+      status: "Hoàn thành",
+      totalPrice: "2000000",
+    },
+  ];
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
@@ -64,12 +99,13 @@ export default function Profile() {
             </TabsList>
 
             <TabsContent value="info">
+              {isLoading && toast.info("Đang cập nhật thông tin...")}
               <div className="space-y-4">
                 <div>
                   <Label>Họ và tên</Label>
                   <Input
-                    value={formData?.fullName || ""}
-                    onChange={(e) => handleChange("fullName", e.target.value)}
+                    value={formData?.fullname || ""}
+                    onChange={(e) => handleChange("fullname", e.target.value)}
                   />
                 </div>
 
@@ -82,13 +118,14 @@ export default function Profile() {
                   />
                 </div>
 
-                <div>
-                  <Label>Số điện thoại</Label>
-                  <Input
-                    type="tel"
-                    value={formData?.phone || ""}
-                    onChange={(e) => handleChange("phone", e.target.value)}
-                  />
+                <div className="py-10 flex gap-1">
+                  <Label>Thay đổi mật khẩu? </Label>
+                  <Link
+                    to="/user/change-password"
+                    className="decoration-solid text-sm text-orange-500 font-medium underline"
+                  >
+                    Vào đây
+                  </Link>
                 </div>
 
                 <div className="pt-2 flex gap-2">
@@ -100,32 +137,10 @@ export default function Profile() {
               </div>
             </TabsContent>
 
-            {/* --- Tab: Lịch sử tour --- */}
             <TabsContent value="history">
               <div className="space-y-4">
                 {mockBookings.map((b) => (
-                  <Card key={b.id} className="border border-gray-100 shadow-sm">
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-lg text-blue-800">
-                        {b.title}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Ngày khởi hành: {b.date}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Trạng thái:{" "}
-                        <span className="font-medium text-green-600">
-                          {b.status}
-                        </span>
-                      </p>
-                      <p className="text-sm mt-1">
-                        Giá:{" "}
-                        <span className="font-semibold text-red-500">
-                          {b.price.toLocaleString("vi-VN")}đ
-                        </span>
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <HistoryTourCard key={b.id} {...b} />
                 ))}
               </div>
             </TabsContent>

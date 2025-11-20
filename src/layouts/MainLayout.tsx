@@ -8,7 +8,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
     <div className="relative">
       <SpanHeader />
       <main>{children}</main>
-      <Toaster />
+      <Toaster position="top-right" richColors />
       <Footer />
     </div>
   );

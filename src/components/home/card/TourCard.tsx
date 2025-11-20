@@ -34,12 +34,12 @@ export default function TourCard({ tour }: { tour: Tour }) {
   };
 
   return (
-    <Card className="overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border-gray-200">
+    <Card className="overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border-gray-200 py-0">
       <div
         className="relative hover:cursor-pointer "
         onClick={handleRedirectToDetails}
       >
-        <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
+        <img src={imageUrl} alt={title} className="w-full h-56 object-cover " />
       </div>
 
       <CardContent

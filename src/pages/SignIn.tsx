@@ -4,15 +4,18 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Facebook } from "lucide-react";
 import GoogleIcon from "@/assets/googleIcon.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BaseAPIURL } from "@/lib/utils";
+import { AxiosClient, BaseAPIURL } from "@/lib/utils";
 import Loading from "@/components/Loading";
 import { useUserStore } from "@/stores/userStore";
 import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
+import { set } from "zod";
 
 export default function SignIn() {
+  const [params] = useSearchParams();
   const navigate = useNavigate();
   const { setUser } = useUserStore();
   const [form, setForm] = useState({
@@ -21,16 +24,43 @@ export default function SignIn() {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const getSatusFromOAuth = async () => {
+    try {
+      setIsLoading(true);
+      const oauthStatus = params.get("oauth");
+      if (oauthStatus === "success") {
+        const response = await AxiosClient.get("/login/oauth2/success");
+        if (response.status === 200) {
+          const token = await response.data.data.accessToken;
+          localStorage.setItem("accessToken", token);
+          setUser(response.data.data.userLogin);
+          toast.success("Đăng nhập bằng OAuth2 thành công!");
+          navigate("/");
+        } else {
+          toast.error(response.data.message || "Đăng nhập thất bại!");
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi đăng nhập bằng OAuth2:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getSatusFromOAuth();
+  }, [params]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
   const handleGoogleLogin = () => {
-    alert("Đăng nhập bằng Google!");
-  };
-
-  const handleFacebookLogin = () => {
-    alert("Đăng nhập bằng Facebook!");
+    try {
+      window.location.href = `http://localhost:8080/oauth2/authorization/google`;
+    } catch (e) {
+      console.error("Lỗi đăng nhập bằng Google:", e);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -122,16 +152,6 @@ export default function SignIn() {
             >
               <img src={GoogleIcon} alt="Google" className="mr-2 w-5 h-5" />
               Đăng nhập với Google
-            </Button>
-
-            <Button
-              type="button"
-              onClick={handleFacebookLogin}
-              variant="outline"
-              className="w-full border-gray-300 hover:bg-gray-100 text-blue-600"
-            >
-              <Facebook className="mr-2 text-xl" />
-              Facebook
             </Button>
           </div>
 
