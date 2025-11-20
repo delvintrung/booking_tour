@@ -25,8 +25,6 @@ const TourPage: React.FC = () => {
     fetchTours();
   }, []);
 
-  console.log("Tours data:", tours);
-
   if (isLoading) return <Loading />;
 
   if (!isLoading && tours.length === 0)

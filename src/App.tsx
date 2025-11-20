@@ -11,8 +11,14 @@ import HandBook from "./components/blog/HandBook";
 import TravelTips from "./components/blog/TravelTips";
 import Profile from "./components/user/Profile";
 import BookingPage from "./pages/Booking";
+import NotFoundPage from "./pages/404Page";
+import { useUserStore } from "./stores/userStore";
+import ChangePassword from "./pages/ChangePassword";
+import VNPayReturnPage from "./pages/VNPayReturn";
+import PaymentFailed from "./components/booking/PaymentFailed";
 
 function App() {
+  const { user } = useUserStore();
   return (
     <Router>
       <Routes>
@@ -93,9 +99,41 @@ function App() {
             </MainLayout>
           }
         />
+        {/* Resolve vnpay return */}
+        <Route
+          path="payment/vnpay_return"
+          element={
+            <MainLayout>
+              <VNPayReturnPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/payment/payment-failed"
+          element={
+            <MainLayout>
+              <PaymentFailed />
+            </MainLayout>
+          }
+        />
+
+        {user ? (
+          <Route
+            path="/user/change-password"
+            element={
+              <MainLayout>
+                <ChangePassword />
+              </MainLayout>
+            }
+          />
+        ) : (
+          <Route path="/user/change-password" element={<ChangePassword />} />
+        )}
         {/* Route khong co header footer */}
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );

@@ -3,6 +3,7 @@ import BookingSummary from "./BookingSummary";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useBookingInfoStore } from "@/stores/informationBooking";
+import { useSelectedTourStore } from "@/stores/selectedTourStore";
 
 interface Props {
   nextStep: () => void;
@@ -16,9 +17,13 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
     address: "",
   });
 
+  const { tourDetailSelected } = useSelectedTourStore.getState();
+
+  const disableChildrenIncrese = tourDetailSelected?.tourPrices?.length! < 2;
+
   const [passengerInfo, setPassengerInfo] = useState({
     adults: 1,
-    children: 1,
+    children: disableChildrenIncrese ? 0 : 1,
   });
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -120,7 +125,13 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
             ].map(({ key, label }) => (
               <div
                 key={key}
-                className="border rounded-lg p-3 flex justify-between items-center"
+                className={`border rounded-lg p-3 flex justify-between items-center 
+                  ${
+                    key === "children" && disableChildrenIncrese
+                      ? "blur-xs cursor-not-allowed"
+                      : ""
+                  }
+                  `}
               >
                 <span>{label}</span>
                 <div className="flex items-center gap-2">
@@ -156,8 +167,6 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
             ))}
           </div>
         </section>
-
-        {/* Ghi chú */}
         <section>
           <h2 className="text-lg font-semibold mb-4">GHI CHÚ</h2>
           <textarea
@@ -171,7 +180,7 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
           onClick={handleSubmit}
           className="bg-red-600 hover:bg-red-700 text-white mt-4"
         >
-          Nhập thông tin để đặt tour
+          Xác nhận thông tin và tiếp tục
         </Button>
       </div>
 

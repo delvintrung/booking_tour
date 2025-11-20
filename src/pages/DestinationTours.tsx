@@ -3,7 +3,8 @@ import TourCard from "@/components/home/card/TourCard";
 import headerDestinations from "@/lib/headerBackground";
 import { useParams } from "react-router-dom";
 import { AxiosClient } from "@/lib/utils";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Loading from "@/components/Loading";
 
 const DestinationTours = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,7 +25,6 @@ const DestinationTours = () => {
               tour.location?.toLowerCase() ===
               currentDestination?.title.toLowerCase()
           ) || [];
-        console.log("Filtered tours:", results);
         setAllTours(results);
       } catch (error) {
         console.error("Error fetching tours:", error);
@@ -37,6 +37,10 @@ const DestinationTours = () => {
       fetchTours();
     }
   }, [name, currentDestination]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="container mx-auto px-20 py-8">

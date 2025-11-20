@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InformationForm from "@/components/booking/InformationForm";
 import StepPayment from "@/components/booking/StepPayment";
 import StepComplete from "@/components/booking/StepComplete";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useSelectedTourStore } from "@/stores/selectedTourStore";
 import { useBookingInfoStore } from "@/stores/informationBooking";
 
 const BookingPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState(1);
+  const [bookingId, setBookingId] = useState<string | null>(null);
 
   const nextStep = () => setStep((s) => s + 1);
   const prevStep = () => setStep((s) => s - 1);
@@ -21,6 +23,20 @@ const BookingPage = () => {
     useBookingInfoStore.getState().clearBookingInfo();
     navigate(-1);
   };
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const status = query.get("status");
+    const bookingId = query.get("bookingId");
+    const offerId = query.get("offer");
+
+    if (status === "success" && bookingId && offerId) {
+      setBookingId(bookingId);
+      setStep(3);
+    } else if (status === "fail") {
+      navigate("/payment/payment-failed", { replace: true });
+    }
+  }, [location.search]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
@@ -64,7 +80,9 @@ const BookingPage = () => {
       </div>
       {step === 1 && <InformationForm nextStep={nextStep} />}
       {step === 2 && <StepPayment nextStep={nextStep} prevStep={prevStep} />}
-      {step === 3 && <StepComplete restartBooking={restartBooking} />}
+      {step === 3 && (
+        <StepComplete bookingId={bookingId!} restartBooking={restartBooking} />
+      )}
     </div>
   );
 };
