@@ -16,6 +16,7 @@ import { useUserStore } from "./stores/userStore";
 import ChangePassword from "./pages/ChangePassword";
 import VNPayReturnPage from "./pages/VNPayReturn";
 import PaymentFailed from "./components/booking/PaymentFailed";
+import TourPrivacyPolicy from "./components/tour/TourPrivacyPolicy";
 
 function App() {
   const { user } = useUserStore();
@@ -60,6 +61,15 @@ function App() {
           element={
             <MainLayout>
               <TourDetails />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/tours/privacy-policy"
+          element={
+            <MainLayout>
+              <TourPrivacyPolicy />
             </MainLayout>
           }
         />

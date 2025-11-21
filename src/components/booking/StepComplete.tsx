@@ -4,10 +4,12 @@ import BookingSummary from "./BookingSummary";
 import { useEffect, useState } from "react";
 import { AxiosClient } from "@/lib/utils";
 import type { Booking } from "@/types";
+import { useNavigate } from "react-router-dom";
+import { useSelectedTourStore } from "@/stores/selectedTourStore";
+import { useBookingInfoStore } from "@/stores/informationBooking";
 
 interface Props {
   bookingId: string | undefined;
-  restartBooking: () => void;
 }
 
 interface Payment {
@@ -19,9 +21,18 @@ interface Payment {
   updatedAt?: string;
 }
 
-const StepComplete: React.FC<Props> = ({ bookingId, restartBooking }) => {
+const StepComplete: React.FC<Props> = ({ bookingId }) => {
+  const navigate = useNavigate();
   const [bookingOrdered, setBookingOrdered] = useState<Booking | null>(null);
   const [payment, setPayment] = useState<Payment | null>(null);
+
+  const handleReleaseBooking = (url: string) => {
+    useSelectedTourStore.getState().clearTour();
+    useSelectedTourStore.getState().clearTourDetail();
+    useBookingInfoStore.getState().clearBookingInfo();
+    navigate(url);
+  };
+
   const fetchBookingDetails = async (id: string) => {
     const response = await AxiosClient.get("/booking/" + id);
     if (response.status === 200) {
@@ -84,15 +95,15 @@ const StepComplete: React.FC<Props> = ({ bookingId, restartBooking }) => {
 
         <div className="flex flex-wrap justify-center gap-4">
           <Button
-            onClick={restartBooking}
             className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={() => handleReleaseBooking("/user/profile")}
           >
-            Đặt thêm tour khác
+            Xem đơn đặt tour
           </Button>
           <Button
             variant="outline"
             className="border-gray-300 text-gray-700"
-            onClick={() => (window.location.href = "/")}
+            onClick={() => handleReleaseBooking("/")}
           >
             Về trang chủ
           </Button>

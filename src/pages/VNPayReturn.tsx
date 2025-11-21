@@ -5,7 +5,12 @@ import { toast } from "sonner";
 
 export default function VNPayReturn() {
   const [searchParams] = useSearchParams();
-  const { tourDetailSelected, tourSelected } = useSelectedTourStore();
+  const { tourDetailSelected, tourSelected } = useSelectedTourStore((state) => {
+    return {
+      tourDetailSelected: state.tourDetailSelected,
+      tourSelected: state.tourSelected,
+    };
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
