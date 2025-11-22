@@ -32,6 +32,8 @@ export interface Tour {
 export interface TourDetail {
   id: number;
   tourId: number;
+  capacity: number;
+  remainingSeats: number;
   startDay: string;
   endDay: string;
   status: string;

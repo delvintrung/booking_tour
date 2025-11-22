@@ -1,15 +1,21 @@
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import BookingSummary from "./BookingSummary";
-import { useState } from "react";
 import { toast } from "sonner";
 import { useBookingInfoStore } from "@/stores/informationBooking";
 import { useSelectedTourStore } from "@/stores/selectedTourStore";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 interface Props {
   nextStep: () => void;
 }
 
 const InformationForm: React.FC<Props> = ({ nextStep }) => {
+  const tourDetailSelected = useSelectedTourStore(
+    (state) => state.tourDetailSelected
+  );
+
   const [informationForm, setInformationForm] = useState({
     fullName: "",
     phone: "",
@@ -17,14 +23,64 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
     address: "",
   });
 
-  const { tourDetailSelected } = useSelectedTourStore.getState();
-
-  const disableChildrenIncrese = tourDetailSelected?.tourPrices?.length! < 2;
+  const disableChildrenIncrese =
+    (tourDetailSelected?.tourPrices?.length || 0) < 2;
 
   const [passengerInfo, setPassengerInfo] = useState({
     adults: 1,
-    children: disableChildrenIncrese ? 0 : 1,
+    children: disableChildrenIncrese ? 0 : 0,
   });
+
+  const [remainingSeats, setRemainingSeats] = useState<number>(
+    tourDetailSelected?.remainingSeats || 0
+  );
+
+  useEffect(() => {
+    if (!tourDetailSelected?.id) return;
+
+    // Update lại state nếu store thay đổi (ví dụ chọn ngày khác)
+    setRemainingSeats(tourDetailSelected.remainingSeats);
+
+    // Kết nối Socket
+    const socket = new SockJS("http://localhost:8080/ws"); // Đổi port nếu backend khác 8080
+    const stompClient = Stomp.over(socket);
+
+    // Tắt debug log cho sạch console
+    stompClient.debug = () => {};
+
+    stompClient.connect({}, () => {
+      // Subscribe vào topic của tour detail cụ thể
+      stompClient.subscribe(
+        `/topic/tour-seats/${tourDetailSelected.id}`,
+        (message) => {
+          if (message.body) {
+            const newSeats = parseInt(message.body);
+            console.log("Realtime update seats:", newSeats);
+            setRemainingSeats(newSeats);
+
+            // Nếu số chỗ mới < số khách đang chọn -> Cần warning hoặc reset
+            // (Ở đây mình chọn cách toast thông báo nhẹ)
+            setPassengerInfo((prev) => {
+              const currentTotal = prev.adults + prev.children;
+              if (currentTotal > newSeats) {
+                toast.warning(
+                  "Số lượng chỗ vừa thay đổi, vui lòng chọn lại số lượng khách!"
+                );
+                return { adults: 1, children: 0 }; // Reset về mặc định
+              }
+              return prev;
+            });
+          }
+        }
+      );
+    });
+
+    return () => {
+      if (stompClient && stompClient.connected) {
+        stompClient.disconnect();
+      }
+    };
+  }, [tourDetailSelected?.id]);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^(0[3|5|7|8|9])([0-9]{8})$/;
@@ -39,6 +95,13 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
     delta: number
   ) => {
     setPassengerInfo((prev) => {
+      const currentTotal = prev.adults + prev.children;
+
+      if (delta > 0 && currentTotal >= remainingSeats) {
+        toast.warning(`Chỉ còn lại ${remainingSeats} chỗ trống!`);
+        return prev;
+      }
+
       const newValue = Math.max(0, prev[type] + delta);
       return { ...prev, [type]: newValue };
     });
@@ -66,7 +129,13 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
       toast.error("Tour bắt buộc phải có ít nhất 1 người lớn!");
       return;
     }
+
     const totalPassengers = passengerInfo.adults + passengerInfo.children;
+
+    if (totalPassengers > remainingSeats) {
+      toast.error("Xin lỗi, số lượng chỗ không đủ!");
+      return;
+    }
 
     if (totalPassengers === 0) {
       toast.error("Vui lòng chọn số lượng hành khách!");
@@ -79,13 +148,31 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
     };
 
     useBookingInfoStore.getState().setBookingInfo(infoAccept);
-    toast.success("Đang xử lý đặt tour của bạn...");
     nextStep();
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2 space-y-8">
+        <div
+          className={`p-4 rounded-lg border ${
+            remainingSeats === 0
+              ? "bg-red-50 border-red-200"
+              : "bg-blue-50 border-blue-200"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-gray-700">Hiện tại</span>
+            {remainingSeats > 0 ? (
+              <span className="text-blue-600 font-bold text-lg">
+                Đang mở bán - Còn {remainingSeats} chỗ
+              </span>
+            ) : (
+              <span className="text-red-600 font-bold text-lg">ĐÃ HẾT CHỖ</span>
+            )}
+          </div>
+        </div>
+
         <section>
           <h2 className="text-lg font-semibold mb-4">THÔNG TIN LIÊN LẠC</h2>
           <div className="grid grid-cols-2 gap-4">
@@ -122,51 +209,71 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
             {[
               { key: "adults", label: "Người lớn" },
               { key: "children", label: "Trẻ nhỏ" },
-            ].map(({ key, label }) => (
-              <div
-                key={key}
-                className={`border rounded-lg p-3 flex justify-between items-center 
-                  ${
-                    key === "children" && disableChildrenIncrese
-                      ? "blur-xs cursor-not-allowed"
-                      : ""
-                  }
-                  `}
-              >
-                <span>{label}</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="w-6 h-6 border rounded hover:bg-gray-100"
-                    onClick={() =>
-                      handlePassengerChange(
-                        key as keyof typeof passengerInfo,
-                        -1
-                      )
-                    }
-                  >
-                    -
-                  </button>
-                  <span>
-                    {passengerInfo[key as keyof typeof passengerInfo]}
-                  </span>
-                  <button
-                    type="button"
-                    className="w-6 h-6 border rounded hover:bg-gray-100"
-                    onClick={() =>
-                      handlePassengerChange(
-                        key as keyof typeof passengerInfo,
-                        1
-                      )
-                    }
-                  >
-                    +
-                  </button>
+            ].map(({ key, label }) => {
+              const isChildrenDisabled =
+                key === "children" && disableChildrenIncrese;
+
+              const currentTotal =
+                passengerInfo.adults + passengerInfo.children;
+              const isFull = currentTotal >= remainingSeats;
+
+              return (
+                <div
+                  key={key}
+                  className={`border rounded-lg p-3 flex justify-between items-center 
+                      ${
+                        isChildrenDisabled
+                          ? "blur-xs cursor-not-allowed bg-gray-100"
+                          : ""
+                      }
+                      `}
+                >
+                  <span>{label}</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="w-6 h-6 border rounded hover:bg-gray-100 flex items-center justify-center"
+                      onClick={() =>
+                        handlePassengerChange(
+                          key as keyof typeof passengerInfo,
+                          -1
+                        )
+                      }
+                      disabled={
+                        passengerInfo[key as keyof typeof passengerInfo] <= 0
+                      }
+                    >
+                      -
+                    </button>
+                    <span className="w-4 text-center">
+                      {passengerInfo[key as keyof typeof passengerInfo]}
+                    </span>
+                    <button
+                      type="button"
+                      className={`w-6 h-6 border rounded flex items-center justify-center
+                            ${
+                              isFull || isChildrenDisabled
+                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                : "hover:bg-gray-100"
+                            }
+                        `}
+                      onClick={() =>
+                        handlePassengerChange(
+                          key as keyof typeof passengerInfo,
+                          1
+                        )
+                      }
+                      disabled={isFull || isChildrenDisabled}
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
+
         <section>
           <h2 className="text-lg font-semibold mb-4">GHI CHÚ</h2>
           <textarea
@@ -178,9 +285,12 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
 
         <Button
           onClick={handleSubmit}
-          className="bg-red-600 hover:bg-red-700 text-white mt-4"
+          className="bg-red-600 hover:bg-red-700 text-white mt-4 w-full py-6 text-lg"
+          disabled={remainingSeats === 0}
         >
-          Xác nhận thông tin và tiếp tục
+          {remainingSeats === 0
+            ? "ĐÃ HẾT CHỖ"
+            : "Xác nhận thông tin và tiếp tục"}
         </Button>
       </div>
 

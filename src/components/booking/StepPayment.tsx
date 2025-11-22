@@ -39,7 +39,7 @@ interface BookingPayload {
   bookingDetails: BookingDetail[];
 }
 
-const StepPayment: React.FC<Props> = ({ nextStep, prevStep }) => {
+const StepPayment: React.FC<Props> = ({ prevStep }) => {
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "vnpay">("cash");
   const [createOrderPayload, setCreateOrderPayload] = useState({
     userId: 0,
