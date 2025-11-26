@@ -29,3 +29,8 @@ export const changeToVND = (amount: number) => {
   });
   return res;
 };
+
+export function formatVND(value: string | number): string {
+  const number = Number(value);
+  return number.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+}

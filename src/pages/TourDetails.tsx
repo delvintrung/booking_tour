@@ -113,6 +113,9 @@ const TourDetails = () => {
       )}
 
       <div className="max-w-md mx-auto space-y-4">
+        <p className="text-xl font-medium text-orange-600">
+          Chọn ngày xuất phát và địa điểm tại đây
+        </p>
         <Select
           onValueChange={handleSelectChange}
           value={String(selectedTourDetail?.id || "")}

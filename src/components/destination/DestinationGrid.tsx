@@ -4,13 +4,12 @@ import type { Destination } from "@/types";
 const destinationsData: Destination[] = [
   {
     id: 1,
-    location: "Mai Châu- Mộc Châu",
-    title:
-      "Du lịch Mai Châu - Mộc Châu 2024: Khám Phá Vẻ Đẹp Mộc Mạc và Thơ Mộng",
+    location: "Việt Nam",
+    title: "Tour Du Lịch Việt Nam: Trải Nghiệm Văn Hóa và Thiên Nhiên Hùng Vĩ",
     image: "/destination/vietnam/maichau.png",
     rating: 5,
     tall: true,
-    keyName: "mai-chau",
+    keyName: "vietnam",
   },
   {
     id: 2,

@@ -3,7 +3,7 @@ import InformationForm from "@/components/booking/InformationForm";
 import StepPayment from "@/components/booking/StepPayment";
 import StepComplete from "@/components/booking/StepComplete";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelectedTourStore } from "@/stores/selectedTourStore";
 import { useBookingInfoStore } from "@/stores/informationBooking";
 
@@ -15,7 +15,6 @@ const BookingPage = () => {
 
   const nextStep = () => setStep((s) => s + 1);
   const prevStep = () => setStep((s) => s - 1);
-  const restartBooking = () => setStep(1);
 
   const closeBooking = () => {
     useSelectedTourStore.getState().clearTour();
@@ -80,9 +79,7 @@ const BookingPage = () => {
       </div>
       {step === 1 && <InformationForm nextStep={nextStep} />}
       {step === 2 && <StepPayment nextStep={nextStep} prevStep={prevStep} />}
-      {step === 3 && (
-        <StepComplete bookingId={bookingId!} restartBooking={restartBooking} />
-      )}
+      {step === 3 && <StepComplete bookingId={bookingId!} />}
     </div>
   );
 };

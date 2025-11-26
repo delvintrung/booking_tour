@@ -31,7 +31,9 @@ export interface Tour {
 
 export interface TourDetail {
   id: number;
-  id_tour: number;
+  tourId: number;
+  capacity: number;
+  remainingSeats: number;
   startDay: string;
   endDay: string;
   status: string;
@@ -85,11 +87,13 @@ export interface Booking {
   createdAt: string;
   updatedAt: string;
   bookingDetails?: BookingDetail[];
+  payment?: Payment;
 }
 
 export interface BookingDetail {
   id?: number;
-  tourDetailId: number;
+  tourDetail?: TourDetail;
+  tourDetailId?: number;
   tourPriceId: number;
   quantity: number;
   price: number;
@@ -100,13 +104,9 @@ export interface BookingDetail {
 
 export interface Payment {
   id: number;
-  id_booking: number;
   amount: number;
-  provider: string;
-
   method: string;
   status: string;
-  transactionDate: string;
   createdAt: string;
   updatedAt: string;
 }

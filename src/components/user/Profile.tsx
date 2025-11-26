@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUserStore } from "@/stores/userStore";
-import type { User } from "@/types";
+import type { User, Booking } from "@/types";
 import { useNavigate, Link } from "react-router-dom";
 import { AxiosClient } from "@/lib/utils";
 import { toast } from "sonner";
@@ -16,12 +16,30 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState<User | null>(user);
+  const [bookingHistory, setBookingHistory] = useState<Booking[] | null>(null);
 
+  // Regex
   const regexPhoneNumber = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
   const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
+  const handleFetchBookingHistory = async () => {
+    try {
+      setIsLoading(true);
+      const response = await AxiosClient.get("/booking/user/" + user?.id);
+      if (response.data.data) {
+        setBookingHistory(response.data.data as Booking[]);
+      }
+    } catch (error) {
+      toast.error("Không thể tải lịch sử đặt tour.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Call api
   useEffect(() => {
     setFormData(user);
+    handleFetchBookingHistory();
   }, [user]);
 
   const handleSave = async () => {
@@ -65,23 +83,6 @@ export default function Profile() {
     toast.success(res.data as string);
     navigate("/sign-in");
   };
-
-  const mockBookings = [
-    {
-      id: 1,
-      bookingDetails: [],
-      createdAt: "2023-08-15 10:30:00 AM",
-      status: "Hoàn thành",
-      totalPrice: "1500000",
-    },
-    {
-      id: 2,
-      bookingDetails: [],
-      createdAt: "2023-08-15 10:30:00 AM",
-      status: "Hoàn thành",
-      totalPrice: "2000000",
-    },
-  ];
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
@@ -139,7 +140,7 @@ export default function Profile() {
 
             <TabsContent value="history">
               <div className="space-y-4">
-                {mockBookings.map((b) => (
+                {bookingHistory?.map((b) => (
                   <HistoryTourCard key={b.id} {...b} />
                 ))}
               </div>
