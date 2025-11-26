@@ -1,3 +1,5 @@
+import { int } from "zod";
+
 export interface User {
   id: number;
   email: string;
@@ -27,12 +29,33 @@ export interface Tour {
   createdBy?: number;
   updatedBy?: number;
   tourDetails?: TourDetail[];
+  reviews?: Review[];
+}
+
+export interface Review {
+  id: number;
+  reviewerName: string;
+  rating: number;
+  content: string;
+  imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Itinerary {
+  id: number;
+  content: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  tour_detail_id: number;
 }
 
 export interface TourDetail {
   id: number;
   tourId: number;
   capacity: number;
+  itinerary: Itinerary[];
   remainingSeats: number;
   startDay: string;
   endDay: string;

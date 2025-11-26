@@ -38,35 +38,27 @@ const InformationForm: React.FC<Props> = ({ nextStep }) => {
   useEffect(() => {
     if (!tourDetailSelected?.id) return;
 
-    // Update lại state nếu store thay đổi (ví dụ chọn ngày khác)
     setRemainingSeats(tourDetailSelected.remainingSeats);
 
-    // Kết nối Socket
-    const socket = new SockJS("http://localhost:8080/ws"); // Đổi port nếu backend khác 8080
+    const socket = new SockJS("http://localhost:8080/ws");
     const stompClient = Stomp.over(socket);
 
-    // Tắt debug log cho sạch console
     stompClient.debug = () => {};
 
     stompClient.connect({}, () => {
-      // Subscribe vào topic của tour detail cụ thể
       stompClient.subscribe(
         `/topic/tour-seats/${tourDetailSelected.id}`,
         (message) => {
           if (message.body) {
             const newSeats = parseInt(message.body);
-            console.log("Realtime update seats:", newSeats);
             setRemainingSeats(newSeats);
-
-            // Nếu số chỗ mới < số khách đang chọn -> Cần warning hoặc reset
-            // (Ở đây mình chọn cách toast thông báo nhẹ)
             setPassengerInfo((prev) => {
               const currentTotal = prev.adults + prev.children;
               if (currentTotal > newSeats) {
                 toast.warning(
                   "Số lượng chỗ vừa thay đổi, vui lòng chọn lại số lượng khách!"
                 );
-                return { adults: 1, children: 0 }; // Reset về mặc định
+                return { adults: 1, children: 0 };
               }
               return prev;
             });
