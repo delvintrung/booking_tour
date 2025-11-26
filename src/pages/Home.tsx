@@ -1,3 +1,4 @@
+import AIAssistant from "@/components/home/AIAssistant";
 import { CtaSection } from "@/components/home/CtaAction";
 import { FavoriteTours } from "@/components/home/FavoriteTours";
 import Hero from "@/components/home/Hero";
@@ -16,6 +17,7 @@ const Home = () => {
       <FavoriteTours />
       <SpecialPromotions />
       <CtaSection />
+      <AIAssistant />
     </div>
   );
 };

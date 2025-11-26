@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Printer } from "lucide-react";
 import BookingSummary from "./BookingSummary";
 import { useEffect, useState } from "react";
 import { AxiosClient } from "@/lib/utils";
@@ -91,6 +91,21 @@ const StepComplete: React.FC<Props> = ({ bookingId }) => {
               )}
             </p>
           </div>
+        </div>
+        <div className="flex flex-col items-center px-4">
+          <p className="text-gray-600 mb-4 mr-4">
+            Thông tin vé đã được gửi về Email ( Có kèm thêm bản PDF) hoặc có thể
+            in trực tiếp tại đây:
+          </p>
+          <div
+            className="flex items-center gap-2 text-orange-400 font-medium cursor-pointer hover:cursor-pointer"
+            onClick={() => console.log("Print")}
+          >
+            <Printer color="#ff5900" /> <p>In</p>
+          </div>
+          <p className="text-red-500 text-sm my-2 ">
+            Cần mang theo vé đến phòng chờ
+          </p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-4">

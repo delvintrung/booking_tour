@@ -20,10 +20,10 @@ const DestinationTours = () => {
       try {
         const response = await AxiosClient.get(`/tours`);
         const results =
-          response.data.data.result.filter(
-            (tour: Tour) =>
-              tour.location?.toLowerCase() ===
-              currentDestination?.title.toLowerCase()
+          response.data.data.result.filter((tour: Tour) =>
+            tour.location
+              ?.toLowerCase()
+              .includes(currentDestination?.title.toLowerCase() || "")
           ) || [];
         setAllTours(results);
       } catch (error) {
@@ -45,9 +45,13 @@ const DestinationTours = () => {
   return (
     <div className="container mx-auto px-20 py-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {allTours.map((tour) => (
-          <TourCard key={tour.id} tour={tour} />
-        ))}
+        {allTours.length > 0 ? (
+          allTours.map((tour) => <TourCard key={tour.id} tour={tour} />)
+        ) : (
+          <p className="text-center col-span-full text-2xl font-semibold text-gray-500">
+            Không có tour nào phù hợp với điểm đến này.
+          </p>
+        )}
       </div>
     </div>
   );
