@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Printer } from "lucide-react";
+import { CheckCircle2, FileDown } from "lucide-react";
 import BookingSummary from "./BookingSummary";
 import { useEffect, useState } from "react";
 import { AxiosClient } from "@/lib/utils";
@@ -25,6 +25,29 @@ const StepComplete: React.FC<Props> = ({ bookingId }) => {
   const navigate = useNavigate();
   const [bookingOrdered, setBookingOrdered] = useState<Booking | null>(null);
   const [payment, setPayment] = useState<Payment | null>(null);
+
+  const handleDownloadBooking = async () => {
+    try {
+      const response = await AxiosClient.get(
+        "/booking/" + bookingId + "/download",
+        { responseType: "blob" }
+      );
+      const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = `booking-${bookingId}.pdf`; // tên file
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(fileURL);
+
+      console.log("PDF downloaded!");
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+  };
 
   const handleReleaseBooking = (url: string) => {
     useSelectedTourStore.getState().clearTour();
@@ -99,9 +122,9 @@ const StepComplete: React.FC<Props> = ({ bookingId }) => {
           </p>
           <div
             className="flex items-center gap-2 text-orange-400 font-medium cursor-pointer hover:cursor-pointer"
-            onClick={() => console.log("Print")}
+            onClick={handleDownloadBooking}
           >
-            <Printer color="#ff5900" /> <p>In</p>
+            <FileDown color="#ff5900" /> <p>Tải vé</p>
           </div>
           <p className="text-red-500 text-sm my-2 ">
             Cần mang theo vé đến phòng chờ

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Facebook } from "lucide-react";
 import GoogleIcon from "@/assets/googleIcon.svg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,10 +11,10 @@ import Loading from "@/components/Loading";
 import { useUserStore } from "@/stores/userStore";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
-import { set } from "zod";
 
 export default function SignIn() {
   const [params] = useSearchParams();
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
   const { setUser } = useUserStore();
   const [form, setForm] = useState({
@@ -80,6 +79,7 @@ export default function SignIn() {
         setUser(response.data.data.userLogin);
         navigate("/");
       } else {
+        setErrorMessage(response.data.message || "Đăng nhập thất bại!");
         toast.error(response.data.message || "Đăng nhập thất bại!");
       }
     } catch (error) {
@@ -164,6 +164,11 @@ export default function SignIn() {
               Đăng ký ngay
             </a>
           </p>
+          {errorMessage && (
+            <p className="text-center text-red-500 text-sm mt-2">
+              {errorMessage}
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,43 +1,36 @@
+import { useEffect, useState } from "react";
 import TourCard from "./card/TourCard";
 import type { Tour } from "@/types";
-
-const toursData: Tour[] = [
-  {
-    id: 1,
-    imageUrl: "https://i.postimg.cc/k47vQ3Tf/quan-lan.jpg",
-    price: 2250000,
-    title: "Tour du lịch Quan Lạn 3 ngày 2 đêm trọn gói 2025",
-    departurePoint: "Hà Nội",
-    rating: 5,
-  },
-  {
-    id: 2,
-    imageUrl: "https://i.postimg.cc/Wb8j3WTR/ha-giang.jpg",
-    price: 42990000,
-    duration: "6N/5Đ",
-    location: "Trung Quốc",
-    title:
-      "Hành trình khám phá Hà Nội - Cáp Nhĩ Tân - Hắc Long Giang 6 ngày 5 đêm: (Thiên đường băng tuyết và văn hóa phương Bắc)",
-    departurePoint: "Hà Nội",
-    rating: 5,
-  },
-  {
-    id: 3,
-    imageUrl: "https://i.postimg.cc/6qW85jVb/trung-quoc-2.jpg",
-    price: 12690000,
-    duration: "6N/5Đ",
-    location: "Trung Quốc",
-    title:
-      "Khám Phá Trung Quốc: Chuyến Hành Trình 6 Ngày 5 Đêm Từ Hà Nội Đến Đại Lý, Côn Minh, Lệ Giang và Shangrila.",
-    departurePoint: "Hà Nội",
-    rating: 4,
-  },
-];
+import { AxiosClient } from "@/lib/utils";
+import Loading from "../Loading";
 
 export function FavoriteTours() {
+  const [toursData, setToursData] = useState<Tour[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchTours = async () => {
+    try {
+      setIsLoading(true);
+      const response = await AxiosClient.get("/tours");
+      setToursData(response.data.data.result.slice(0, 3));
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch tours on component mount
+  useEffect(() => {
+    fetchTours();
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <section className="py-16 bg-gray-50 px-4 sm:px-8 md:px-20">
-      {" "}
       <div className="container mx-auto">
         <div className="text-center mb-10">
           <p className="text-red-500 font-bold text-sm tracking-widest relative inline-block">
