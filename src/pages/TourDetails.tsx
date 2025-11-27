@@ -116,10 +116,16 @@ const TourDetails = () => {
       `/topic/reviews/${tour.id}`,
       (msg: any) => {
         const newReview = JSON.parse(msg.body);
-        setTour((prev: any) => ({
-          ...prev,
-          reviews: [...(prev?.reviews || []), newReview],
-        }));
+        setTour((prev: any) => {
+          if (!prev) return prev;
+
+          const updatedReviews = [...(prev.reviews || []), newReview];
+
+          return {
+            ...prev,
+            reviews: updatedReviews,
+          };
+        });
       }
     );
 
@@ -176,8 +182,8 @@ const TourDetails = () => {
                 value="schedule"
                 className="pt-4 text-gray-700 space-y-4"
               >
-                {selectedTourDetail && selectedTourDetail.itinerary ? (
-                  selectedTourDetail.itinerary.map((itinerary, index) => (
+                {selectedTourDetail && selectedTourDetail.itineraries ? (
+                  selectedTourDetail.itineraries.map((itinerary, index) => (
                     <div key={itinerary.id} className="space-y-1">
                       <p className="font-semibold text-orange-600">
                         📅 {itinerary.title}

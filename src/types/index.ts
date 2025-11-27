@@ -55,7 +55,7 @@ export interface TourDetail {
   id: number;
   tourId: number;
   capacity: number;
-  itinerary: Itinerary[];
+  itineraries: Itinerary[];
   remainingSeats: number;
   startDay: string;
   endDay: string;
